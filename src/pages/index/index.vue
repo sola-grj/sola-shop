@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { getHomeBannerAPI, getHomeCategoryAPI } from '@/services/home'
+import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/home'
 import Customnavbar from './components/Customnavbar.vue'
 import CategoryPannel from './components/CategoryPannel.vue'
+import HotPannel from './components/HotPannel.vue'
 import { onLoad } from '@dcloudio/uni-app'
-import type { BannerItem, CategoryItem } from '@/types/home'
+import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { ref } from 'vue'
 
 // 获取轮播图数据
@@ -19,10 +20,18 @@ const getHomeCategoryData = async () => {
   const res = await getHomeCategoryAPI()
   categoryList.value = res.result
 }
+
+// 获取热门推荐数据
+const hotList = ref<HotItem[]>([])
+const getHomeHotData = async () => {
+  const res = await getHomeHotAPI()
+  hotList.value = res.result
+}
 // uniapp 生命周期
 onLoad(() => {
   getHomeBannerData()
   getHomeCategoryData()
+  getHomeHotData()
 })
 </script>
 
@@ -33,6 +42,8 @@ onLoad(() => {
   <SolaShopSwiper :list="bannerList" />
   <!-- 分类面板 -->
   <CategoryPannel :list="categoryList" />
+  <!-- 热门推荐 -->
+  <HotPannel :list="hotList" />
   <view class="index">index12345</view>
 </template>
 
