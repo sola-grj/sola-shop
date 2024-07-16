@@ -6,7 +6,7 @@ import { onMounted, ref } from 'vue'
 
 // 分页参数
 const pageParams: Required<PageParams> = {
-  page: 33,
+  page: 1,
   pageSize: 10,
 }
 // 已经结束的标记
@@ -28,6 +28,12 @@ const getHomeGoodsGuessLikeData = async () => {
     finish.value = true
   }
 }
+// 重置数据方法
+const resetData = () => {
+  pageParams.page = 1
+  guessList.value = []
+  finish.value = false
+}
 // 组件挂载完毕
 onMounted(() => {
   getHomeGoodsGuessLikeData()
@@ -36,6 +42,7 @@ onMounted(() => {
 // 暴漏方法
 defineExpose({
   getMore: getHomeGoodsGuessLikeData,
+  resetData,
 })
 </script>
 
