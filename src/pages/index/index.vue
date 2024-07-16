@@ -3,6 +3,7 @@ import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/
 import Customnavbar from './components/Customnavbar.vue'
 import CategoryPannel from './components/CategoryPannel.vue'
 import HotPannel from './components/HotPannel.vue'
+import PageSkeleton from './components/PageSkeleton.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { ref } from 'vue'
@@ -28,11 +29,15 @@ const getHomeHotData = async () => {
   const res = await getHomeHotAPI()
   hotList.value = res.result
 }
+
+// 是否加载中
+const isLoading = ref(false)
+
 // uniapp 生命周期
-onLoad(() => {
-  getHomeBannerData()
-  getHomeCategoryData()
-  getHomeHotData()
+onLoad(async () => {
+  isLoading.value = true
+  await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData()])
+  isLoading.value = false
 })
 
 // 获取猜你喜欢组件实例
@@ -76,14 +81,17 @@ const onRefresherrefresh = async () => {
     class="sroll-view"
     scroll-y
   >
-    <!-- 自定义轮播图 -->
-    <SolaShopSwiper :list="bannerList" />
-    <!-- 分类面板 -->
-    <CategoryPannel :list="categoryList" />
-    <!-- 热门推荐 -->
-    <HotPannel :list="hotList" />
-    <!-- 猜你喜欢 -->
-    <SolaShopGuess ref="guessRef" />
+    <PageSkeleton v-if="isLoading" />
+    <template v-else>
+      <!-- 自定义轮播图 -->
+      <SolaShopSwiper :list="bannerList" />
+      <!-- 分类面板 -->
+      <CategoryPannel :list="categoryList" />
+      <!-- 热门推荐 -->
+      <HotPannel :list="hotList" />
+      <!-- 猜你喜欢 -->
+      <SolaShopGuess ref="guessRef" />
+    </template>
   </scroll-view>
 </template>
 
