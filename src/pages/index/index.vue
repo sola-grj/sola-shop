@@ -6,6 +6,7 @@ import HotPannel from './components/HotPannel.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { ref } from 'vue'
+import type { SolaShopGuessInstance } from '@/types/component'
 
 // 获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
@@ -33,22 +34,39 @@ onLoad(() => {
   getHomeCategoryData()
   getHomeHotData()
 })
+
+// 获取猜你喜欢组件实例
+const guessRef = ref<SolaShopGuessInstance>()
+// 滚动触底回调
+const onScrollToLower = () => {
+  console.log('---end---')
+  guessRef.value?.getMore()
+}
 </script>
 
 <template>
   <!-- 自定义导航栏 -->
   <Customnavbar />
-  <!-- 自定义轮播图 -->
-  <SolaShopSwiper :list="bannerList" />
-  <!-- 分类面板 -->
-  <CategoryPannel :list="categoryList" />
-  <!-- 热门推荐 -->
-  <HotPannel :list="hotList" />
-  <view class="index">index12345</view>
+  <scroll-view @scrolltolower="onScrollToLower" class="sroll-view" scroll-y>
+    <!-- 自定义轮播图 -->
+    <SolaShopSwiper :list="bannerList" />
+    <!-- 分类面板 -->
+    <CategoryPannel :list="categoryList" />
+    <!-- 热门推荐 -->
+    <HotPannel :list="hotList" />
+    <!-- 猜你喜欢 -->
+    <SolaShopGuess ref="guessRef" />
+  </scroll-view>
 </template>
 
 <style lang="scss">
 page {
+  height: 100%;
   background-color: #f7f7f7;
+  display: flex;
+  flex-direction: column;
+}
+.sroll-view {
+  flex: 1;
 }
 </style>
