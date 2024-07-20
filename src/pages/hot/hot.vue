@@ -21,6 +21,7 @@ uni.setNavigationBarTitle({ title: currUrlMap!.title })
 // 获取热门推荐数据
 const getHotRecommendData = async () => {
   const res = await getHotRecommendAPI(currUrlMap!.url)
+  console.log(res)
 }
 
 // 页面加载
