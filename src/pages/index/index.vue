@@ -7,7 +7,7 @@ import PageSkeleton from './components/PageSkeleton.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
 import { ref } from 'vue'
-import type { SolaShopGuessInstance } from '@/types/component'
+import { useGuessList } from '@/composables'
 
 // 获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
@@ -40,13 +40,8 @@ onLoad(async () => {
   isLoading.value = false
 })
 
-// 获取猜你喜欢组件实例
-const guessRef = ref<SolaShopGuessInstance>()
-// 滚动触底回调
-const onScrollToLower = () => {
-  console.log('---end---')
-  guessRef.value?.getMore()
-}
+const { guessRef, onScrollToLower } = useGuessList()
+
 // 当前下拉刷新状态
 const isTriggered = ref(false)
 // 自定义下拉刷新被触发
