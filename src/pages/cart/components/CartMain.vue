@@ -96,6 +96,7 @@ const goToPayment = () => {
   if (seletedCardlistCount.value === 0) {
     uni.showToast({ icon: 'none', title: '请选择商品' })
   }
+  uni.navigateTo({ url: '/PagesOrder/create/create' })
 }
 
 const { guessRef, onScrollToLower } = useGuessList()
