@@ -1,8 +1,21 @@
 <script setup lang="ts">
+import { useAddressStore } from '@/stores/modules/address'
+import type { AddressItem } from '@/types/address'
+
 //子调用父
-defineEmits<{
+const emit = defineEmits<{
   (event: 'close'): void
 }>()
+
+const addressStore = useAddressStore()
+const query = defineProps<{
+  addressList: AddressItem[]
+}>()
+
+const chooseAddress = (item: AddressItem) => {
+  addressStore.changeSelectedAddress(item)
+  emit('close')
+}
 </script>
 
 <template>
@@ -13,20 +26,18 @@ defineEmits<{
     <view class="title">配送至</view>
     <!-- 内容 -->
     <view class="content">
-      <view class="item">
-        <view class="user">李明 13824686868</view>
-        <view class="address">北京市顺义区后沙峪地区安平北街6号院</view>
-        <text class="icon icon-checked"></text>
-      </view>
-      <view class="item">
-        <view class="user">王东 13824686868</view>
-        <view class="address">北京市顺义区后沙峪地区安平北街6号院</view>
-        <text class="icon icon-ring"></text>
-      </view>
-      <view class="item">
-        <view class="user">张三 13824686868</view>
-        <view class="address">北京市朝阳区孙河安平北街6号院</view>
-        <text class="icon icon-ring"></text>
+      <view
+        class="item"
+        @tap="($event) => chooseAddress(item)"
+        v-for="item in query.addressList"
+        :key="item.id"
+      >
+        <view class="user">{{ item.receiver }} {{ item.contact }}</view>
+        <view class="address">{{ item.fullLocation }} {{ item.address }}</view>
+        <text
+          class="icon"
+          :class="addressStore.selectedAddress?.id === item.id ? 'icon-checked' : ''"
+        ></text>
       </view>
     </view>
     <view class="footer">

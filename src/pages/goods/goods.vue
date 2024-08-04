@@ -12,6 +12,9 @@ import type {
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
 import { computed } from 'vue'
 import { postMemberCartAPI } from '@/services/cart'
+import { useAddressStore } from '@/stores/modules/address'
+import type { AddressItem } from '@/types/address'
+import { getMemberAddressAPI } from '@/services/address'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
@@ -50,8 +53,18 @@ const getGoodsByIdData = async () => {
     }),
   }
 }
+
+const addressStore = useAddressStore()
+//获取收货地址列表数据
+const addressList = ref<AddressItem[]>([])
+const getMemberAddressData = async () => {
+  const res = await getMemberAddressAPI()
+  addressList.value = res.result
+}
+
 onLoad(() => {
   getGoodsByIdData()
+  getMemberAddressData()
 })
 // 轮播图变化的回调
 const currentIndex = ref(0)
@@ -172,7 +185,13 @@ const onBuyNow = (ev: SkuPopupEvent) => {
         </view>
         <view @tap="openPopup('address')" class="item arrow">
           <text class="label">送至</text>
-          <text class="text ellipsis"> 请选择收获地址 </text>
+          <text class="text ellipsis">
+            {{
+              addressStore.selectedAddress
+                ? addressStore.selectedAddress.fullLocation
+                : '请选择收获地址'
+            }}
+          </text>
         </view>
         <view @tap="openPopup('service')" class="item arrow">
           <text class="label">服务</text>
@@ -247,7 +266,7 @@ const onBuyNow = (ev: SkuPopupEvent) => {
 
   <!-- 弹出层 -->
   <uni-popup ref="popup" type="bottom" background-color="#fff">
-    <AddressPannel v-if="popupName === 'address'" @close="onClose" />
+    <AddressPannel :addressList="addressList" v-if="popupName === 'address'" @close="onClose" />
     <ServicePannel v-if="popupName === 'service'" @close="onClose" />
   </uni-popup>
 </template>

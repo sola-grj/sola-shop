@@ -5,6 +5,11 @@ import { defineProps } from 'vue'
 defineProps<{
   list: CategoryItem[]
 }>()
+
+const onTap = (item: CategoryItem) => {
+  console.log('====000', `/pages/category/category?type=${item.id}`)
+  uni.switchTab({ url: `/pages/category/category?type=${item.id}` })
+}
 </script>
 
 <template>
@@ -12,9 +17,9 @@ defineProps<{
     <navigator
       class="category-item"
       hover-class="none"
-      url="/pages/index/index"
       v-for="item in list"
       :key="item.id"
+      @tap="($event) => onTap(item)"
     >
       <image class="icon" :src="item.icon"></image>
       <text class="text">{{ item.name }}</text>

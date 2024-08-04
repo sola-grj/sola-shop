@@ -7,6 +7,10 @@ import { onLoad } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
 import PageSkeleton from './components/PageSkeleton.vue'
 
+// 获取首页参数
+const query = defineProps<{
+  type: string
+}>()
 // 获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
 const getBannerListData = async () => {
@@ -27,6 +31,13 @@ const isFinish = ref(false)
 onLoad(async () => {
   await Promise.all([getBannerListData(), getCategoryTopData()])
   isFinish.value = true
+  if (query.type) {
+    categoryList.value.forEach((item, index) => {
+      if (item.id === query.type) {
+        activeIndex.value = index
+      }
+    })
+  }
 })
 
 // 获取当前二级分类数据
