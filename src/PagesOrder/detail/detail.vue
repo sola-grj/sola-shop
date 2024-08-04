@@ -118,8 +118,10 @@ const onOrderPay = async () => {
   if (import.meta.env.DEV) {
     await getPayMockAPI({ orderId: query.id })
   } else {
+    // #ifdef MP-WEIXIN
     const res = await getPayWxPayMiniPayAPI({ orderId: query.id })
     wx.requestPayment(res.result)
+    // #endif
   }
   // 关闭当前页面，在跳转支付结果页面
   uni.redirectTo({ url: `/PagesOrder/payment/payment?id=${query.id}` })
